@@ -78,6 +78,8 @@ public class HomeController {
         detalleOrden.setTotal(producto.getPrecio() * cantidad);
         detalleOrden.setProducto(producto);
 
+        detalles.add(detalleOrden);
+
         sumaTotal= detalles.stream().mapToDouble(dt->dt.getTotal()).sum();
 
         orden.setTotal(sumaTotal);
