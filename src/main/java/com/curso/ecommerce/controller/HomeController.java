@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")//Apunta a la raiz del proyecto
@@ -98,14 +99,27 @@ public class HomeController {
 //        Lista nueva de productos
         List<DetalleOrden> ordenesNueva = new ArrayList<DetalleOrden>();
 
-        for(DetalleOrden detalleOrden: detalles){
-            if(detalleOrden.getProducto().getId() != id){
-                ordenesNueva.add(detalleOrden);
-            }
-        }
 
-//        Poner la nueva lista con los productos restantes
-        detalles = ordenesNueva;
+
+//        for(DetalleOrden detalleOrden: detalles){
+//            if(detalleOrden.getProducto().getId() != id){
+//                ordenesNueva.add(detalleOrden);
+//            }
+//        }
+//
+////        Poner la nueva lista con los productos restantes
+//        detalles = ordenesNueva;
+
+//        ================================================================
+//        Filtrado con metodo Lamba
+//        ================================================================
+        detalles = detalles.stream() //Se crea el Stream
+//                Filtro para obtener los productos con el ID enviado
+                .filter( dt -> dt.getProducto().getId() != id)
+//                Pone las ordenes que se filtraron dentro de una nueva lista
+                .collect(Collectors.toList());
+
+        log.info("Esta es la lista actual en el carrito {}", detalles);
 
         double sumaTotal = 0;
 
