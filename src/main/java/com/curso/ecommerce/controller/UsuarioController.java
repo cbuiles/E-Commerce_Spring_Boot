@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/usuario")
 public class UsuarioController {
@@ -42,6 +45,29 @@ public class UsuarioController {
     public String login(){
 
         return "usuario/login";
+
+    }
+
+    @PostMapping("/acceder")
+    public String acceder(Usuario usuario, HttpSession session){
+
+        log.info("Accesos: {}", usuario);
+
+        Optional<Usuario> user = usuarioService.findByEmail(usuario.getEmail());
+        log.info("Usuario de DB : {}", user.get());
+
+        if(user.isPresent()){
+            session.setAttribute("idusuario", user.get().getId());
+            if(user.get().getTipo().equals("ADMIN")){
+                return "redirect:/administrador";
+            }else{
+                return "redirect:/";
+            }
+        }else {
+            log.info("Usuario no existe");
+        }
+
+        return "redirect:/";
 
     }
 
