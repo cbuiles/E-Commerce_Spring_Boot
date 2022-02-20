@@ -201,4 +201,20 @@ public class HomeController {
 
         return "redirect:/";
     }
+
+    @PostMapping("/search")
+    public String searcgProduct(@RequestParam String nombre, Model modelo){
+
+        log.info("Nombre del producto: {}", nombre);
+        List<Producto> productos = productoService.findAll().
+                stream(). //Crear el flujo de datos
+                filter(p-> p.getNombre().contains(nombre)) //Filtrar por cada uno de los nombres que lo contienen (Retorna un String)
+                .collect(Collectors.toList());//Convertimos ese String en una lista
+
+        modelo.addAttribute("productos", productos);
+
+
+        return "usuario/home";
+
+    }
 }
