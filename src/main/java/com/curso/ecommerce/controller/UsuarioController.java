@@ -56,6 +56,7 @@ public class UsuarioController {
         Optional<Usuario> user = usuarioService.findByEmail(usuario.getEmail());
         log.info("Usuario de DB : {}", user.get());
 
+//        Validacion para saber que tipo de usuario se loggeo
         if(user.isPresent()){
             session.setAttribute("idusuario", user.get().getId());
             if(user.get().getTipo().equals("ADMIN")){
