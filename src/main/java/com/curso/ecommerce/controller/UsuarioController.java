@@ -1,18 +1,18 @@
 package com.curso.ecommerce.controller;
 
+import com.curso.ecommerce.model.Orden;
 import com.curso.ecommerce.model.Usuario;
+import com.curso.ecommerce.service.IOrdenService;
 import com.curso.ecommerce.service.IUsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,6 +23,9 @@ public class UsuarioController {
 
     @Autowired
     private IUsuarioService usuarioService;
+
+    @Autowired
+    private IOrdenService iOrdenService;
 
     @GetMapping("/registro")
     public String create(){
@@ -78,8 +81,29 @@ public class UsuarioController {
 
         modelo.addAttribute("sesion", session.getAttribute("idusuario") );
 
+        Usuario usuario = usuarioService.findById((Integer) session.getAttribute("idusuario")).get();
+
+        List<Orden> ordenes = iOrdenService.findByUsuario(usuario);
+
+        modelo.addAttribute("ordenes", ordenes);
+
         return "usuario/compras";
 
+    }
+
+    @GetMapping("/detalle/{id}")
+    public String detalleCompra(@PathVariable("id") Integer id, HttpSession session, Model modelo){
+
+        log.info("Id de la orden {}", id);
+
+        Orden orden = iOrdenService.findById(id).get();
+
+        modelo.addAttribute("detalles", orden.getDetalle());
+
+//        session
+        modelo.addAttribute("sesion", session.getAttribute("idusuario"));
+
+        return "usuario/detallecompra";
     }
 
 }
