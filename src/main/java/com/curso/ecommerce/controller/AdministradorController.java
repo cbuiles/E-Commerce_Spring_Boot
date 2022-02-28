@@ -6,10 +6,13 @@ import com.curso.ecommerce.model.Usuario;
 import com.curso.ecommerce.service.IOrdenService;
 import com.curso.ecommerce.service.IUsuarioService;
 import com.curso.ecommerce.service.ProductoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -26,6 +29,8 @@ public class AdministradorController {
 
     @Autowired
     private IOrdenService ordenesService;
+
+    private final Logger log = LoggerFactory.getLogger(AdministradorController.class);
 
     @GetMapping("")
     public String home(Model model){
@@ -55,5 +60,16 @@ public class AdministradorController {
         model.addAttribute("ordenes", ordenes);
 
         return "administrador/ordenes";
+    }
+
+    @GetMapping("/detalle/{id}")
+    public String detalle(@PathVariable("id") Integer id, Model model){
+
+        log.info("Id de la orden: {}", id );
+        Orden orden = ordenesService.findById(id).get();
+
+        model.addAttribute("detalles", orden.getDetalle());
+
+        return "administrador/detalleorden";
     }
 }
